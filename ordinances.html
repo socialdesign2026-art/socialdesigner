@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>울산광역시 남구 자치조례 목록</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .nav a {
+      font-size: 13px;
+      color: #3b5bdb;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav a:hover { text-decoration: underline; }
+    .nav-sep { font-size: 13px; color: #ccc; }
+    .nav-current { font-size: 13px; color: #888; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 36px 36px 32px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #3b5bdb;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+    }
+
+    /* API Key section */
+    .apikey-section {
+      background: #f8f9ff;
+      border: 1.5px solid #e0e7ff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-top: 20px;
+    }
+
+    .apikey-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #3b5bdb;
+      margin-bottom: 4px;
+    }
+
+    .apikey-desc {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .apikey-desc a {
+      color: #3b5bdb;
+      text-decoration: none;
+    }
+
+    .apikey-desc a:hover { text-decoration: underline; }
+
+    .apikey-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .apikey-row input {
+      flex: 1;
+      padding: 11px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #1a1a2e;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .apikey-row input:focus { border-color: #3b5bdb; }
+
+    .apikey-row input::placeholder { color: #bbb; font-size: 13px; }
+
+    .btn {
+      padding: 11px 20px;
+      background: #3b5bdb;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #2f4dbf; }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-sm {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: 8px;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #3b5bdb;
+      border: 1.5px solid #3b5bdb;
+    }
+    .btn-outline:hover { background: #f0f4ff; }
+
+    .apikey-status {
+      font-size: 12px;
+      margin-top: 8px;
+      color: #888;
+    }
+
+    .apikey-status.ok { color: #2d9e6b; }
+    .apikey-status.err { color: #e03131; }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 180px;
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #1a1a2e;
+      background: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap input:focus { border-color: #3b5bdb; }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: #aaa;
+      pointer-events: none;
+    }
+
+    .filter-select {
+      padding: 11px 36px 11px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #1a1a2e;
+      background: #fff;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: #3b5bdb; }
+
+    /* Result info */
+    .result-info {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .result-info strong { color: #1a1a2e; }
+
+    /* Ordinance list */
+    .ordinance-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .ordinance-item {
+      background: #fff;
+      border: 1.5px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      text-decoration: none;
+      display: block;
+      cursor: pointer;
+    }
+
+    .ordinance-item:hover {
+      border-color: #c5d3f5;
+      box-shadow: 0 2px 12px rgba(59,91,219,0.08);
+    }
+
+    .ordinance-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .ordinance-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ordinance-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #e8f0fe;
+      color: #3b5bdb;
+    }
+
+    .ordinance-badge.rule { background: #e6fcf5; color: #2d9e6b; }
+    .ordinance-badge.notice { background: #fff3cd; color: #b45309; }
+
+    .ordinance-date {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .ordinance-no {
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    /* Skeleton loading */
+    .skeleton {
+      background: #f0f0f0;
+      border-radius: 8px;
+      animation: shimmer 1.2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+
+    .skeleton-item {
+      background: #fff;
+      border: 1.5px solid #f0f0f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      border-color: #3b5bdb;
+      color: #3b5bdb;
+      background: #f0f4ff;
+    }
+
+    .page-btn.active {
+      background: #3b5bdb;
+      border-color: #3b5bdb;
+      color: #fff;
+    }
+
+    .page-btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* Empty / error states */
+    .state-box {
+      text-align: center;
+      padding: 48px 20px;
+      color: #aaa;
+    }
+
+    .state-box .state-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .state-box p { font-size: 14px; line-height: 1.7; }
+
+    .state-box a { color: #3b5bdb; text-decoration: none; }
+    .state-box a:hover { text-decoration: underline; }
+
+    /* Responsive */
+    @media (max-width: 540px) {
+      .card { padding: 24px 18px 20px; }
+      h1 { font-size: 19px; }
+      .controls { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+    <!-- Navigation -->
+    <div class="nav">
+      <a href="index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        기준중위소득 계산기
+      </a>
+      <span class="nav-sep">·</span>
+      <span class="nav-current">울산 남구 자치조례</span>
+    </div>
+
+    <!-- Header -->
+    <div class="card">
+      <span class="badge">자치법규</span>
+      <h1>울산광역시 남구 자치조례 목록</h1>
+      <p class="subtitle">법제처 국가법령정보센터 API를 통해 울산광역시 남구의 자치조례를 조회합니다.</p>
+
+      <div class="apikey-section" id="apikeySection">
+        <div class="apikey-title">법제처 Open API 인증키 설정</div>
+        <div class="apikey-desc">
+          무료로 이용 가능합니다.
+          <a href="https://www.law.go.kr/LSO/openApi/openApiInfoP.do" target="_blank" rel="noopener">law.go.kr</a>에서 회원가입 후 이메일 주소를 인증키로 사용하세요.
+        </div>
+        <div class="apikey-row">
+          <input type="email" id="apikeyInput" placeholder="가입한 이메일 주소 입력" autocomplete="email" />
+          <button class="btn" onclick="saveApiKey()">저장 후 조회</button>
+        </div>
+        <div class="apikey-status" id="apikeyStatus"></div>
+      </div>
+    </div>
+
+    <!-- List section (hidden until key set) -->
+    <div id="listSection" style="display:none;">
+      <div class="controls">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="조례명 검색…" oninput="onSearch()" />
+        </div>
+        <select class="filter-select" id="typeFilter" onchange="onFilter()">
+          <option value="">전체 종류</option>
+          <option value="조례">조례</option>
+          <option value="규칙">규칙</option>
+          <option value="훈령">훈령</option>
+          <option value="예규">예규</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="resetApiKey()">키 변경</button>
+      </div>
+
+      <div class="result-info" id="resultInfo"></div>
+      <div class="ordinance-list" id="ordinanceList"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://www.law.go.kr/DRF/lawSearch.do';
+    const DISPLAY = 20;
+    const LS_KEY = 'ulsan_law_apikey';
+
+    let currentPage = 1;
+    let totalCount = 0;
+    let allItems = [];   // all fetched items (client-side filter)
+    let filteredItems = [];
+    let apiKey = '';
+
+    // ──────────────────────────────────────────
+    // Init
+    // ──────────────────────────────────────────
+    (function init() {
+      const saved = localStorage.getItem(LS_KEY);
+      if (saved) {
+        apiKey = saved;
+        document.getElementById('apikeyInput').value = saved;
+        document.getElementById('apikeySection').style.display = 'none';
+        document.getElementById('listSection').style.display = '';
+        fetchAll();
+      }
+    })();
+
+    // ──────────────────────────────────────────
+    // API Key
+    // ──────────────────────────────────────────
+    function saveApiKey() {
+      const val = document.getElementById('apikeyInput').value.trim();
+      if (!val || !val.includes('@')) {
+        setKeyStatus('올바른 이메일 주소를 입력해 주세요.', 'err');
+        return;
+      }
+      apiKey = val;
+      localStorage.setItem(LS_KEY, val);
+      setKeyStatus('', '');
+      document.getElementById('apikeySection').style.display = 'none';
+      document.getElementById('listSection').style.display = '';
+      fetchAll();
+    }
+
+    function resetApiKey() {
+      localStorage.removeItem(LS_KEY);
+      apiKey = '';
+      allItems = [];
+      filteredItems = [];
+      document.getElementById('apikeySection').style.display = '';
+      document.getElementById('listSection').style.display = 'none';
+    }
+
+    function setKeyStatus(msg, type) {
+      const el = document.getElementById('apikeyStatus');
+      el.textContent = msg;
+      el.className = 'apikey-status' + (type ? ' ' + type : '');
+    }
+
+    document.getElementById('apikeyInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') saveApiKey();
+    });
+
+    // ──────────────────────────────────────────
+    // Fetch (all pages)
+    // ──────────────────────────────────────────
+    async function fetchAll() {
+      showSkeleton();
+      allItems = [];
+      try {
+        // First page to get total count
+        const first = await fetchPage(1);
+        const total = parseInt(first.totalCnt || '0', 10);
+        totalCount = total;
+
+        allItems = allItems.concat(normalizeItems(first));
+
+        // Fetch remaining pages
+        const totalPages = Math.ceil(total / DISPLAY);
+        const promises = [];
+        for (let p = 2; p <= Math.min(totalPages, 50); p++) {
+          promises.push(fetchPage(p));
+        }
+        const results = await Promise.all(promises);
+        for (const r of results) {
+          allItems = allItems.concat(normalizeItems(r));
+        }
+
+        applyFilter();
+      } catch (err) {
+        showError(err);
+      }
+    }
+
+    async function fetchPage(page) {
+      const params = new URLSearchParams({
+        OC: apiKey,
+        target: 'ordin',
+        type: 'JSON',
+        query: '울산광역시 남구',
+        display: DISPLAY,
+        page,
+      });
+      const res = await fetch(`${API_BASE}?${params}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      const ls = json.LawSearch;
+      if (!ls) throw new Error('응답 형식이 올바르지 않습니다.');
+      if (ls.errMsg) throw new Error(ls.errMsg);
+      return ls;
+    }
+
+    function normalizeItems(ls) {
+      const laws = ls.laws?.law;
+      if (!laws) return [];
+      const arr = Array.isArray(laws) ? laws : [laws];
+      return arr.map(item => ({
+        id: item['법령ID'] || '',
+        name: item['법령명한글'] || item['법령명'] || '',
+        type: item['법령구분명'] || '',
+        dept: item['소관부처명'] || '',
+        promDate: fmtDate(item['공포일자'] || ''),
+        enfDate: fmtDate(item['시행일자'] || ''),
+        no: item['공포번호'] || '',
+        link: item['법령상세링크'] || '',
+      }));
+    }
+
+    // ──────────────────────────────────────────
+    // Filter & Search
+    // ──────────────────────────────────────────
+    function onSearch() {
+      currentPage = 1;
+      applyFilter();
+    }
+
+    function onFilter() {
+      currentPage = 1;
+      applyFilter();
+    }
+
+    function applyFilter() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const type = document.getElementById('typeFilter').value;
+
+      filteredItems = allItems.filter(item => {
+        const matchQ = !q || item.name.toLowerCase().includes(q) || item.type.includes(q);
+        const matchType = !type || item.type.includes(type);
+        return matchQ && matchType;
+      });
+
+      renderList();
+    }
+
+    // ──────────────────────────────────────────
+    // Render
+    // ──────────────────────────────────────────
+    function renderList() {
+      const start = (currentPage - 1) * DISPLAY;
+      const end = start + DISPLAY;
+      const pageItems = filteredItems.slice(start, end);
+
+      const infoEl = document.getElementById('resultInfo');
+      if (allItems.length === 0) {
+        infoEl.textContent = '';
+      } else {
+        infoEl.innerHTML = `총 <strong>${filteredItems.length.toLocaleString('ko-KR')}</strong>건`;
+        if (filteredItems.length !== allItems.length) {
+          infoEl.innerHTML += ` (전체 ${allItems.length.toLocaleString('ko-KR')}건 중 필터됨)`;
+        }
+      }
+
+      const listEl = document.getElementById('ordinanceList');
+
+      if (filteredItems.length === 0) {
+        listEl.innerHTML = `
+          <div class="state-box">
+            <div class="state-icon">📋</div>
+            <p>조건에 맞는 조례가 없습니다.</p>
+          </div>`;
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      listEl.innerHTML = pageItems.map(item => {
+        const badgeClass = item.type.includes('규칙') ? 'rule' : item.type.includes('훈령') || item.type.includes('예규') ? 'notice' : '';
+        const detailUrl = item.link
+          ? `https://www.law.go.kr${item.link.replace(/^https?:\/\/www\.law\.go\.kr/, '')}`
+          : `https://www.law.go.kr/ordinInfoP.do?ordinSeq=${item.id}`;
+
+        return `
+          <a class="ordinance-item" href="${escHtml(detailUrl)}" target="_blank" rel="noopener">
+            <div class="ordinance-name">${escHtml(item.name)}</div>
+            <div class="ordinance-meta">
+              <span class="ordinance-badge ${badgeClass}">${escHtml(item.type || '자치법규')}</span>
+              ${item.promDate ? `<span class="ordinance-date">공포 ${escHtml(item.promDate)}</span>` : ''}
+              ${item.enfDate ? `<span class="ordinance-date">시행 ${escHtml(item.enfDate)}</span>` : ''}
+              ${item.no ? `<span class="ordinance-no">${escHtml(item.no)}</span>` : ''}
+            </div>
+          </a>`;
+      }).join('');
+
+      renderPagination();
+    }
+
+    function renderPagination() {
+      const totalPages = Math.ceil(filteredItems.length / DISPLAY);
+      if (totalPages <= 1) {
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      let html = '';
+      html += `<button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>`;
+
+      const range = pageRange(currentPage, totalPages);
+      for (const p of range) {
+        if (p === '…') {
+          html += `<span class="page-btn" style="cursor:default;border:none;">…</span>`;
+        } else {
+          html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+        }
+      }
+
+      html += `<button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>›</button>`;
+      document.getElementById('pagination').innerHTML = html;
+    }
+
+    function pageRange(cur, total) {
+      if (total <= 7) return Array.from({length: total}, (_, i) => i + 1);
+      const pages = [];
+      pages.push(1);
+      if (cur > 3) pages.push('…');
+      for (let p = Math.max(2, cur - 1); p <= Math.min(total - 1, cur + 1); p++) pages.push(p);
+      if (cur < total - 2) pages.push('…');
+      pages.push(total);
+      return pages;
+    }
+
+    function goPage(p) {
+      currentPage = p;
+      renderList();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ──────────────────────────────────────────
+    // Loading / Error states
+    // ──────────────────────────────────────────
+    function showSkeleton() {
+      document.getElementById('resultInfo').textContent = '불러오는 중…';
+      document.getElementById('ordinanceList').innerHTML = Array(6).fill(0).map(() => `
+        <div class="skeleton-item">
+          <div class="skeleton skeleton-line" style="width:65%;"></div>
+          <div class="skeleton skeleton-line" style="width:35%;height:11px;"></div>
+        </div>`).join('');
+      document.getElementById('pagination').innerHTML = '';
+    }
+
+    function showError(err) {
+      document.getElementById('resultInfo').textContent = '';
+      const isAuth = err.message && (err.message.includes('인증') || err.message.includes('401') || err.message.includes('OC'));
+      document.getElementById('ordinanceList').innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">⚠️</div>
+          <p>${isAuth ? 'API 인증 오류입니다. 이메일 인증키를 확인해 주세요.' : '데이터를 불러오지 못했습니다.'}<br/>
+          <small style="color:#ccc">${escHtml(err.message)}</small><br/><br/>
+          직접 확인하려면 <a href="https://www.elis.go.kr/searching/ordinSearch.do?searchQuery=울산광역시+남구" target="_blank" rel="noopener">자치법규정보시스템 바로가기 →</a></p>
+        </div>`;
+      document.getElementById('pagination').innerHTML = '';
+    }
+
+    // ──────────────────────────────────────────
+    // Helpers
+    // ──────────────────────────────────────────
+    function fmtDate(d) {
+      if (!d || d.length < 8) return d;
+      return `${d.slice(0,4)}.${d.slice(4,6)}.${d.slice(6,8)}`;
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
