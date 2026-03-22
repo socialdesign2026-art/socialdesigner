@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>해피커넥트 – 울산 남구 복지 서비스 연결</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .nav a {
+      font-size: 13px;
+      color: #3b5bdb;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav a:hover { text-decoration: underline; }
+    .nav-sep { font-size: 13px; color: #ccc; }
+    .nav-current { font-size: 13px; color: #888; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 36px 36px 32px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fff0f6;
+      color: #e64980;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    /* Search */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 14px 16px 14px 44px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      color: #1a1a2e;
+      background: #fafafa;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-wrap input:focus {
+      border-color: #e64980;
+      background: #fff;
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #bbb;
+    }
+
+    /* Filter chips */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid #e0e0e0;
+      background: #fff;
+      color: #555;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .chip:hover { border-color: #e64980; color: #e64980; }
+    .chip.active {
+      background: #e64980;
+      border-color: #e64980;
+      color: #fff;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+    .stats-bar strong { color: #1a1a2e; }
+
+    /* Service cards */
+    .service-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .service-card {
+      border: 1.5px solid #f0f0f0;
+      border-radius: 14px;
+      padding: 20px;
+      background: #fff;
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+    .service-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      border-color: #ffc9da;
+    }
+
+    .service-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .service-title-block { flex: 1; min-width: 0; }
+
+    .service-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 2px;
+    }
+    .service-org {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .service-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 10px;
+      background: #f0f4f8;
+      color: #555;
+    }
+
+    .service-desc {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .service-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #555;
+    }
+    .contact-row svg { flex-shrink: 0; color: #bbb; }
+
+    .btn-call {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: #e64980;
+      color: #fff;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .btn-call:hover { background: #c93672; }
+    .btn-call:active { transform: scale(0.97); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: #bbb;
+      display: none;
+    }
+    .empty-state svg { margin-bottom: 12px; opacity: 0.4; }
+    .empty-state p { font-size: 14px; }
+
+    /* Emergency box */
+    .emergency-box {
+      background: linear-gradient(135deg, #e64980 0%, #f06595 100%);
+      border-radius: 16px;
+      padding: 24px 28px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .emergency-box h2 {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .emergency-box p {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .emergency-nums {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .em-num {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .em-num-label { font-size: 11px; font-weight: 400; opacity: 0.85; }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <nav class="nav">
+      <a href="index.html">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        소득 계산기
+      </a>
+      <span class="nav-sep">/</span>
+      <a href="ordinances.html">자치조례</a>
+      <span class="nav-sep">/</span>
+      <a href="news.html">삼호동 뉴스</a>
+      <span class="nav-sep">/</span>
+      <span class="nav-current">해피커넥트</span>
+    </nav>
+
+    <!-- Emergency box -->
+    <div class="emergency-box">
+      <h2>긴급 도움이 필요하신가요?</h2>
+      <p>위기 상황이라면 아래 번호로 즉시 연락하세요. 24시간 운영합니다.</p>
+      <div class="emergency-nums">
+        <div class="em-num">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.89a16 16 0 0 0 6 6l1.06-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div>
+            <div>129</div>
+            <div class="em-num-label">보건복지상담센터</div>
+          </div>
+        </div>
+        <div class="em-num">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.89a16 16 0 0 0 6 6l1.06-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div>
+            <div>052-226-7900</div>
+            <div class="em-num-label">울산 남구 희망복지지원단</div>
+          </div>
+        </div>
+        <div class="em-num">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.89a16 16 0 0 0 6 6l1.06-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <div>
+            <div>052-256-1003</div>
+            <div class="em-num-label">삼호동 주민센터</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main card -->
+    <div class="card">
+      <span class="badge">해피커넥트</span>
+      <h1>복지 서비스 연결 안내</h1>
+      <p class="subtitle">울산 남구에서 받을 수 있는 복지 서비스를 한눈에 확인하고 연결해 드립니다.<br />대상·상황에 맞는 서비스를 검색하거나 카테고리로 찾아보세요.</p>
+
+      <div class="search-wrap">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="서비스명, 대상, 기관명 검색…" oninput="filterServices()" />
+      </div>
+
+      <div class="filter-row" id="filterRow">
+        <div class="chip active" data-cat="전체" onclick="selectChip(this)">전체</div>
+        <div class="chip" data-cat="노인" onclick="selectChip(this)">🧓 노인</div>
+        <div class="chip" data-cat="장애인" onclick="selectChip(this)">♿ 장애인</div>
+        <div class="chip" data-cat="아동·청소년" onclick="selectChip(this)">👶 아동·청소년</div>
+        <div class="chip" data-cat="한부모·가족" onclick="selectChip(this)">👨‍👧 한부모·가족</div>
+        <div class="chip" data-cat="긴급복지" onclick="selectChip(this)">🆘 긴급복지</div>
+        <div class="chip" data-cat="청년" onclick="selectChip(this)">🎓 청년</div>
+      </div>
+
+      <div class="stats-bar">
+        총 <strong id="countLabel">10</strong>개의 서비스가 있습니다
+      </div>
+
+      <div class="service-list" id="serviceList"></div>
+      <div class="empty-state" id="emptyState">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>검색 결과가 없습니다.<br />다른 키워드나 카테고리를 선택해 보세요.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const SERVICES = [
+      {
+        name: '노인 맞춤 돌봄 서비스',
+        org: '울산 남구청 노인복지과',
+        cat: '노인',
+        icon: '🧓',
+        iconBg: '#fff3e0',
+        tags: ['65세 이상', '재가돌봄', '안전확인'],
+        desc: '혼자 사시는 어르신이나 돌봄이 필요한 어르신에게 생활지원사가 정기적으로 방문·전화하여 안전을 확인하고 일상생활을 지원합니다.',
+        phone: '052-226-5710',
+        address: '울산 남구 중앙로 201',
+        hours: '평일 09:00 – 18:00',
+      },
+      {
+        name: '장애인 활동 지원 서비스',
+        org: '울산 남구장애인복지관',
+        cat: '장애인',
+        icon: '♿',
+        iconBg: '#e8f5e9',
+        tags: ['장애인', '활동보조', '자립지원'],
+        desc: '만 6세 이상 장애인이 일상생활·사회활동을 영위할 수 있도록 활동보조인을 연결해 드립니다. 급여 시간은 장애 정도에 따라 결정됩니다.',
+        phone: '052-257-0981',
+        address: '울산 남구 삼산로 100',
+        hours: '평일 09:00 – 18:00',
+      },
+      {
+        name: '아동 급식 카드 지원',
+        org: '울산 남구청 아동복지팀',
+        cat: '아동·청소년',
+        icon: '🍱',
+        iconBg: '#e3f2fd',
+        tags: ['만 18세 이하', '결식 아동', '급식 카드'],
+        desc: '가정 형편이 어렵거나 결식 우려가 있는 아동·청소년에게 급식 카드를 발급하여 편의점·식당에서 식사를 해결할 수 있도록 지원합니다.',
+        phone: '052-226-5670',
+        address: '울산 남구 중앙로 201',
+        hours: '평일 09:00 – 18:00',
+      },
+      {
+        name: '한부모가족 복지 서비스',
+        org: '울산 남구 건강가정·다문화가족지원센터',
+        cat: '한부모·가족',
+        icon: '👨‍👧',
+        iconBg: '#fce4ec',
+        tags: ['한부모', '양육비', '주거 지원'],
+        desc: '이혼·사별 등으로 혼자 자녀를 양육하는 가정에 양육비 지원, 주거 연계, 심리 상담, 법률 지원 등을 제공합니다.',
+        phone: '052-256-9191',
+        address: '울산 남구 삼산로 311',
+        hours: '평일 09:00 – 18:00',
+      },
+      {
+        name: '긴급복지 지원',
+        org: '울산 남구 희망복지지원단',
+        cat: '긴급복지',
+        icon: '🆘',
+        iconBg: '#fce4ec',
+        tags: ['위기 가구', '생계·의료·주거', '신속 지원'],
+        desc: '갑작스러운 위기 상황(실직, 질병, 화재 등)으로 생계 유지가 어려운 경우 생계비·의료비·주거비 등을 신속하게 지원합니다.',
+        phone: '052-226-7900',
+        address: '울산 남구 중앙로 201',
+        hours: '평일 09:00 – 18:00 (위기 상황 시 129)',
+      },
+      {
+        name: '청년 마음 건강 서비스',
+        org: '울산 남구 정신건강복지센터',
+        cat: '청년',
+        icon: '🧠',
+        iconBg: '#ede7f6',
+        tags: ['만 19~34세', '상담', '무료'],
+        desc: '우울·불안·스트레스를 겪는 청년에게 심리 상담, 정신건강 교육, 자조모임 연계 등을 무료로 지원합니다.',
+        phone: '052-256-4195',
+        address: '울산 남구 옥현로 59',
+        hours: '평일 09:00 – 18:00',
+      },
+      {
+        name: '노인 일자리 지원',
+        org: '울산 남구 시니어클럽',
+        cat: '노인',
+        icon: '💼',
+        iconBg: '#fff8e1',
+        tags: ['60세 이상', '일자리', '사회참여'],
+        desc: '어르신들이 사회활동과 경제 활동에 참여할 수 있도록 공익형·사회서비스형·시장형 일자리를 연계합니다.',
+        phone: '052-271-0910',
+        address: '울산 남구 번영로 62',
+        hours: '평일 09:00 – 18:00',
+      },
+      {
+        name: '장애아동 재활 지원',
+        org: '울산 남구 발달장애인지원센터',
+        cat: '장애인',
+        icon: '🏥',
+        iconBg: '#e8f5e9',
+        tags: ['장애 아동', '재활치료', '발달 지원'],
+        desc: '발달장애 아동·청소년에게 언어치료·작업치료·행동치료 바우처를 지원하고 발달 단계에 맞는 교육 프로그램을 연계합니다.',
+        phone: '052-256-3400',
+        address: '울산 남구 삼산로 150',
+        hours: '평일 09:00 – 17:30',
+      },
+      {
+        name: '청소년 방과후 아카데미',
+        org: '울산 남구 청소년수련관',
+        cat: '아동·청소년',
+        icon: '📚',
+        iconBg: '#e3f2fd',
+        tags: ['초·중학생', '방과후', '무료'],
+        desc: '학교 방과후 돌봄이 필요한 초·중학생에게 학습 지도, 체험 활동, 급식 등을 제공합니다. 저소득 가정 우선 지원.',
+        phone: '052-257-2800',
+        address: '울산 남구 삼산로 300',
+        hours: '학기중 13:00 – 21:00',
+      },
+      {
+        name: '다문화가족 지원 서비스',
+        org: '울산 남구 건강가정·다문화가족지원센터',
+        cat: '한부모·가족',
+        icon: '🌏',
+        iconBg: '#fce4ec',
+        tags: ['다문화', '한국어 교육', '통번역'],
+        desc: '결혼이민자 및 다문화가족에게 한국어 교육, 가족 상담, 통번역 서비스, 자녀 교육 지원 등을 제공합니다.',
+        phone: '052-256-9191',
+        address: '울산 남구 삼산로 311',
+        hours: '평일 09:00 – 18:00',
+      },
+    ];
+
+    let activeCategory = '전체';
+
+    function renderServices(list) {
+      const container = document.getElementById('serviceList');
+      const empty = document.getElementById('emptyState');
+      const countLabel = document.getElementById('countLabel');
+
+      countLabel.textContent = list.length;
+
+      if (list.length === 0) {
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      container.innerHTML = list.map(s => `
+        <div class="service-card">
+          <div class="service-header">
+            <div class="service-icon" style="background:${s.iconBg}">${s.icon}</div>
+            <div class="service-title-block">
+              <div class="service-name">${s.name}</div>
+              <div class="service-org">${s.org}</div>
+            </div>
+          </div>
+          <div class="service-tags">
+            ${s.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+          </div>
+          <div class="service-desc">${s.desc}</div>
+          <div class="service-footer">
+            <div class="contact-info">
+              <div class="contact-row">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.89a16 16 0 0 0 6 6l1.06-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                ${s.phone}
+              </div>
+              <div class="contact-row">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                ${s.hours}
+              </div>
+            </div>
+            <a class="btn-call" href="tel:${s.phone.replace(/-/g, '')}">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.65 3.18 2 2 0 0 1 3.62 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.89a16 16 0 0 0 6 6l1.06-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              전화 연결
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterServices() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      let list = SERVICES;
+
+      if (activeCategory !== '전체') {
+        list = list.filter(s => s.cat === activeCategory);
+      }
+      if (q) {
+        list = list.filter(s =>
+          s.name.toLowerCase().includes(q) ||
+          s.org.toLowerCase().includes(q) ||
+          s.tags.some(t => t.toLowerCase().includes(q)) ||
+          s.desc.toLowerCase().includes(q)
+        );
+      }
+      renderServices(list);
+    }
+
+    function selectChip(el) {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      activeCategory = el.dataset.cat;
+      filterServices();
+    }
+
+    // Initial render
+    renderServices(SERVICES);
+  </script>
+</body>
+</html>
