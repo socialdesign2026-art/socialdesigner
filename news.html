@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>울산 남구 삼호동 뉴스 알림</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .nav a {
+      font-size: 13px;
+      color: #3b5bdb;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nav a:hover { text-decoration: underline; }
+    .nav-sep { font-size: 13px; color: #ccc; }
+    .nav-current { font-size: 13px; color: #888; }
+
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 36px 36px 32px;
+      margin-bottom: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #3b5bdb;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+    }
+
+    /* Alert Settings */
+    .alert-section {
+      background: #f8f9ff;
+      border: 1.5px solid #e0e7ff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-top: 22px;
+    }
+
+    .alert-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .alert-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .alert-time {
+      font-size: 12px;
+      color: #3b5bdb;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .alert-desc {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+
+    .alert-status {
+      font-size: 12px;
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .alert-status.ok {
+      background: #e6fcf5;
+      color: #2d9e6b;
+    }
+
+    .alert-status.warning {
+      background: #fff3cd;
+      color: #b45309;
+    }
+
+    /* Toggle switch */
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #ccc;
+      border-radius: 28px;
+      transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: '';
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    }
+    .toggle input:checked + .toggle-slider { background: #3b5bdb; }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(22px); }
+
+    /* Result header */
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .result-info {
+      font-size: 13px;
+      color: #888;
+    }
+    .result-info strong { color: #1a1a2e; }
+
+    /* Button */
+    .btn {
+      padding: 9px 16px;
+      background: #3b5bdb;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #2f4dbf; }
+    .btn:active { transform: scale(0.98); }
+
+    /* News list */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .news-item {
+      background: #fff;
+      border: 1.5px solid #f0f0f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      text-decoration: none;
+      display: block;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .news-item:hover {
+      border-color: #c5d3f5;
+      box-shadow: 0 2px 12px rgba(59,91,219,0.08);
+    }
+
+    .news-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+      line-height: 1.45;
+    }
+
+    .news-desc {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.55;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .news-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .news-source {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #e8f0fe;
+      color: #3b5bdb;
+    }
+
+    .news-date {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    /* Skeleton */
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e4e4e4 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+
+    .skeleton-item {
+      background: #fff;
+      border: 1.5px solid #f0f0f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    /* State box */
+    .state-box {
+      text-align: center;
+      padding: 48px 20px;
+      color: #aaa;
+    }
+    .state-box .state-icon { font-size: 40px; margin-bottom: 12px; }
+    .state-box p { font-size: 14px; line-height: 1.7; }
+
+    @media (max-width: 540px) {
+      .card { padding: 24px 18px 20px; }
+      h1 { font-size: 19px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <!-- Navigation -->
+    <div class="nav">
+      <a href="index.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        기준중위소득 계산기
+      </a>
+      <span class="nav-sep">·</span>
+      <a href="ordinances.html">울산 남구 자치조례</a>
+      <span class="nav-sep">·</span>
+      <span class="nav-current">삼호동 뉴스</span>
+    </div>
+
+    <!-- Header -->
+    <div class="card">
+      <span class="badge">지역 뉴스</span>
+      <h1>울산 남구 삼호동 뉴스</h1>
+      <p class="subtitle">Google 뉴스에서 울산 남구 삼호동 관련 최신 뉴스를 불러옵니다.</p>
+
+      <!-- Alert Settings -->
+      <div class="alert-section">
+        <div class="alert-header">
+          <div>
+            <div class="alert-title">매일 아침 8시 뉴스 알림</div>
+            <div class="alert-time" id="nextAlertTime"></div>
+          </div>
+          <label class="toggle" aria-label="알림 설정">
+            <input type="checkbox" id="alertToggle" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div class="alert-desc">
+          알림을 켜면 매일 오전 8시에 최신 뉴스 제목을 브라우저 알림으로 받습니다.
+          이 페이지가 열려 있는 동안 알림이 동작합니다.
+        </div>
+        <div class="alert-status" id="alertStatus"></div>
+      </div>
+    </div>
+
+    <!-- News Section -->
+    <div class="result-header">
+      <div class="result-info" id="resultInfo"></div>
+      <button class="btn" onclick="loadNews()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        새로고침
+      </button>
+    </div>
+
+    <div class="news-list" id="newsList"></div>
+
+  </div>
+
+  <script>
+    const LS_ALERT_KEY = 'samho_news_alert_enabled';
+    const RSS_URL = 'https://news.google.com/rss/search?q=%EC%9A%B8%EC%82%B0+%EB%82%A8%EA%B5%AC+%EC%82%BC%ED%98%B8%EB%8F%99&hl=ko&gl=KR&ceid=KR:ko';
+    const PROXY   = 'https://api.allorigins.win/get?url=';
+
+    let alertTimer = null;
+
+    // ──────────────────────────────────────────
+    // Init
+    // ──────────────────────────────────────────
+    (function init() {
+      loadNews();
+
+      const toggle = document.getElementById('alertToggle');
+      toggle.addEventListener('change', () => toggleAlert(toggle.checked));
+
+      if (localStorage.getItem(LS_ALERT_KEY) === 'true') {
+        if ('Notification' in window && Notification.permission === 'granted') {
+          toggle.checked = true;
+          scheduleNextAlert();
+          showAlertStatus('알림이 설정되어 있습니다. 매일 오전 8시에 알림이 울립니다.', 'ok');
+        } else {
+          localStorage.setItem(LS_ALERT_KEY, 'false');
+        }
+      }
+    })();
+
+    // ──────────────────────────────────────────
+    // News Fetch
+    // ──────────────────────────────────────────
+    async function loadNews() {
+      showSkeleton();
+      try {
+        const res = await fetch(PROXY + encodeURIComponent(RSS_URL));
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(data.contents, 'text/xml');
+        const parseErr = xml.querySelector('parsererror');
+        if (parseErr) throw new Error('RSS 파싱 오류');
+        const items = Array.from(xml.querySelectorAll('item'));
+        if (items.length === 0) { showEmpty(); return; }
+        renderNews(items);
+      } catch (err) {
+        showError(err);
+      }
+    }
+
+    function renderNews(items) {
+      document.getElementById('resultInfo').innerHTML =
+        `총 <strong>${items.length}</strong>건의 뉴스`;
+
+      document.getElementById('newsList').innerHTML = items.map(item => {
+        const rawTitle = getTextContent(item, 'title');
+        const { title, source: srcFromTitle } = splitTitle(rawTitle);
+        const link        = getLinkHref(item);
+        const pubDate     = getTextContent(item, 'pubDate');
+        const source      = getTextContent(item, 'source') || srcFromTitle;
+        const description = stripHtml(getTextContent(item, 'description'));
+
+        return `
+          <a class="news-item" href="${escHtml(link)}" target="_blank" rel="noopener noreferrer">
+            <div class="news-title">${escHtml(title)}</div>
+            ${description ? `<div class="news-desc">${escHtml(description)}</div>` : ''}
+            <div class="news-meta">
+              ${source ? `<span class="news-source">${escHtml(source)}</span>` : ''}
+              ${pubDate ? `<span class="news-date">${fmtDate(pubDate)}</span>` : ''}
+            </div>
+          </a>`;
+      }).join('');
+    }
+
+    // ──────────────────────────────────────────
+    // Alert / Notification
+    // ──────────────────────────────────────────
+    async function toggleAlert(enabled) {
+      if (enabled) {
+        if (!('Notification' in window)) {
+          showAlertStatus('이 브라우저는 알림을 지원하지 않습니다.', 'warning');
+          document.getElementById('alertToggle').checked = false;
+          return;
+        }
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') {
+          showAlertStatus('알림 권한이 거부되었습니다. 브라우저 설정에서 이 사이트의 알림을 허용해 주세요.', 'warning');
+          document.getElementById('alertToggle').checked = false;
+          return;
+        }
+        localStorage.setItem(LS_ALERT_KEY, 'true');
+        scheduleNextAlert();
+        showAlertStatus('알림이 설정되었습니다. 매일 오전 8시에 알림이 울립니다.', 'ok');
+      } else {
+        localStorage.setItem(LS_ALERT_KEY, 'false');
+        if (alertTimer) { clearTimeout(alertTimer); alertTimer = null; }
+        hideAlertStatus();
+        document.getElementById('nextAlertTime').textContent = '';
+      }
+    }
+
+    function scheduleNextAlert() {
+      if (alertTimer) clearTimeout(alertTimer);
+
+      const now  = new Date();
+      const next = new Date();
+      next.setHours(8, 0, 0, 0);
+      if (now >= next) next.setDate(next.getDate() + 1);
+
+      const ms = next - now;
+      alertTimer = setTimeout(async () => {
+        await fireNotification();
+        scheduleNextAlert();
+      }, ms);
+
+      // Show countdown
+      updateNextAlertLabel(next);
+    }
+
+    function updateNextAlertLabel(next) {
+      const el = document.getElementById('nextAlertTime');
+      const fmt = next.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+      el.textContent = `다음 알림: ${fmt} 오전 8:00`;
+    }
+
+    async function fireNotification() {
+      try {
+        const res  = await fetch(PROXY + encodeURIComponent(RSS_URL));
+        const data = await res.json();
+        const parser = new DOMParser();
+        const xml    = parser.parseFromString(data.contents, 'text/xml');
+        const first  = xml.querySelector('item');
+        const { title } = splitTitle(getTextContent(first, 'title'));
+        const link = getLinkHref(first);
+
+        const n = new Notification('울산 남구 삼호동 뉴스', {
+          body: title || '새 뉴스가 있습니다.',
+          tag: 'samho-news',
+        });
+        if (link) n.onclick = () => { window.open(link, '_blank'); n.close(); };
+
+        loadNews();
+      } catch (_) {
+        new Notification('울산 남구 삼호동 뉴스', {
+          body: '새 소식을 확인해 보세요.',
+          tag: 'samho-news',
+        });
+      }
+    }
+
+    // ──────────────────────────────────────────
+    // UI helpers
+    // ──────────────────────────────────────────
+    function showAlertStatus(msg, type) {
+      const el = document.getElementById('alertStatus');
+      el.textContent = msg;
+      el.className = 'alert-status' + (type ? ' ' + type : '');
+      el.style.display = '';
+    }
+
+    function hideAlertStatus() {
+      document.getElementById('alertStatus').style.display = 'none';
+    }
+
+    function showSkeleton() {
+      document.getElementById('resultInfo').textContent = '뉴스를 불러오는 중…';
+      document.getElementById('newsList').innerHTML = Array(5).fill(0).map(() => `
+        <div class="skeleton-item">
+          <div class="skeleton skeleton-line" style="width:82%;height:16px;"></div>
+          <div class="skeleton skeleton-line" style="width:60%;height:12px;margin-bottom:12px;"></div>
+          <div class="skeleton skeleton-line" style="width:28%;height:11px;"></div>
+        </div>`).join('');
+    }
+
+    function showEmpty() {
+      document.getElementById('resultInfo').textContent = '';
+      document.getElementById('newsList').innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">📰</div>
+          <p>현재 관련 뉴스가 없습니다.</p>
+        </div>`;
+    }
+
+    function showError(err) {
+      document.getElementById('resultInfo').textContent = '';
+      document.getElementById('newsList').innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">⚠️</div>
+          <p>뉴스를 불러오지 못했습니다.<br/>
+          잠시 후 새로고침을 눌러 다시 시도해 주세요.<br/>
+          <small style="color:#ccc">${escHtml(err.message)}</small></p>
+        </div>`;
+    }
+
+    // ──────────────────────────────────────────
+    // RSS / Text helpers
+    // ──────────────────────────────────────────
+    function getTextContent(item, tag) {
+      if (!item) return '';
+      const el = item.querySelector(tag);
+      return el ? (el.textContent || '').trim() : '';
+    }
+
+    /** Google News RSS <link> is a sibling text node, not an element attribute */
+    function getLinkHref(item) {
+      if (!item) return '#';
+      // Try standard link element text
+      const linkEl = item.querySelector('link');
+      if (linkEl && linkEl.textContent.trim()) return linkEl.textContent.trim();
+      // Fallback: guid
+      const guid = item.querySelector('guid');
+      return guid ? guid.textContent.trim() : '#';
+    }
+
+    /** Google News title format: "제목 - 언론사" */
+    function splitTitle(raw) {
+      const parts = raw.split(/\s+-\s+/);
+      if (parts.length >= 2) {
+        const source = parts[parts.length - 1].trim();
+        const title  = parts.slice(0, -1).join(' - ').trim();
+        return { title, source };
+      }
+      return { title: raw.trim(), source: '' };
+    }
+
+    function stripHtml(str) {
+      return str.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").trim();
+    }
+
+    function fmtDate(dateStr) {
+      try {
+        const d    = new Date(dateStr);
+        const now  = new Date();
+        const diff = now - d;
+        const mins  = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days  = Math.floor(diff / 86400000);
+        if (mins < 60)  return `${mins}분 전`;
+        if (hours < 24) return `${hours}시간 전`;
+        if (days < 7)   return `${days}일 전`;
+        return d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+      } catch { return dateStr; }
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
