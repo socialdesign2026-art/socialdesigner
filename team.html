@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나만의 코딩팀 가이드</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .nav {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .nav a {
+      font-size: 13px;
+      color: #3b5bdb;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav a:hover { text-decoration: underline; }
+
+    .header-card {
+      background: linear-gradient(135deg, #3b5bdb 0%, #5c7cfa 100%);
+      border-radius: 20px;
+      padding: 36px 32px 32px;
+      color: #fff;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 4px 12px;
+      margin-bottom: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .header-card h1 {
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+
+    .header-card p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6;
+    }
+
+    /* Quick Reference Table */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #888;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .quick-ref {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .quick-ref-header {
+      padding: 18px 20px 14px;
+      border-bottom: 1.5px solid #f0f0f0;
+    }
+
+    .ref-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      border-top: 1px solid #f5f5f5;
+      gap: 12px;
+    }
+
+    .ref-row:hover { background: #f8f9ff; }
+
+    .ref-tag {
+      font-size: 12px;
+      font-weight: 700;
+      color: #3b5bdb;
+      background: #e8f0fe;
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+    }
+
+    .ref-desc {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* Role cards */
+    .roles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 580px) {
+      .roles-grid { grid-template-columns: 1fr; }
+      .header-card h1 { font-size: 22px; }
+    }
+
+    .role-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .role-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1.5px solid #f0f0f0;
+    }
+
+    .role-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      font-size: 20px;
+    }
+
+    .role-icon.frontend { background: #e8f0fe; }
+    .role-icon.backend  { background: #e8fdf5; }
+    .role-icon.fullstack{ background: #fff3e0; }
+    .role-icon.devops   { background: #fce4ec; }
+
+    .role-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .role-subtitle {
+      font-size: 12px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    .role-body {
+      padding: 16px 20px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .role-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #aaa;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .tech-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      font-size: 12px;
+      font-weight: 600;
+      color: #3b5bdb;
+      background: #f0f4ff;
+      border-radius: 8px;
+      padding: 3px 9px;
+    }
+
+    .chip.green  { color: #0d7a5f; background: #e6faf4; }
+    .chip.orange { color: #b35800; background: #fff3e0; }
+    .chip.red    { color: #c0394b; background: #fdedf0; }
+
+    .principles {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .principles li {
+      font-size: 13px;
+      color: #555;
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .principles li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #3b5bdb;
+      font-weight: 700;
+    }
+
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .checklist li {
+      font-size: 13px;
+      color: #555;
+      padding-left: 20px;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .checklist li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid #bbb;
+      border-radius: 3px;
+    }
+
+    .output-tag {
+      font-size: 12px;
+      color: #555;
+      background: #fafafa;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      padding: 8px 12px;
+      line-height: 1.6;
+    }
+
+    .output-tag span {
+      display: inline-block;
+      font-weight: 700;
+      color: #3b5bdb;
+      margin-right: 4px;
+    }
+
+    .output-arrow {
+      color: #aaa;
+      margin: 0 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <a href="index.html">
+        기준중위소득 계산기
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="ordinances.html">
+        울산 남구 자치조례 보기
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a href="news.html">
+        삼호동 뉴스 알림
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </nav>
+
+    <div class="header-card">
+      <div class="badge">팀 운영 가이드</div>
+      <h1>나만의 코딩팀</h1>
+      <p>역할별 전문성을 가진 개발팀 구성원 가이드입니다.<br />작업 성격에 맞는 역할을 선택해 요청하세요.</p>
+    </div>
+
+    <!-- Quick Reference -->
+    <div class="quick-ref">
+      <div class="quick-ref-header">
+        <div class="section-title">빠른 참조</div>
+      </div>
+      <div class="ref-row">
+        <span class="ref-tag">Frontend Developer</span>
+        <span class="ref-desc">UI 개발, 컴포넌트, 사용자 인터랙션</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-tag">Backend Developer</span>
+        <span class="ref-desc">API 설계, 서버 로직, 데이터 처리</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-tag">Full Stack Developer</span>
+        <span class="ref-desc">통합 개발, E2E 구현, 프로젝트 아키텍처</span>
+      </div>
+      <div class="ref-row">
+        <span class="ref-tag">DevOps Engineer</span>
+        <span class="ref-desc">배포 자동화, 환경 설정, 성능 최적화</span>
+      </div>
+    </div>
+
+    <!-- Role Cards -->
+    <div class="section-title" style="margin-bottom:14px;">역할별 상세 가이드</div>
+    <div class="roles-grid">
+
+      <!-- Frontend -->
+      <div class="role-card">
+        <div class="role-header">
+          <div class="role-icon frontend">🎨</div>
+          <div class="role-title">Frontend Developer</div>
+          <div class="role-subtitle">반응형 인터랙티브 사용자 인터페이스 구현</div>
+        </div>
+        <div class="role-body">
+          <div>
+            <div class="role-section-label">Tech Stack</div>
+            <div class="tech-chips">
+              <span class="chip">TypeScript</span>
+              <span class="chip">React 18+</span>
+              <span class="chip">Next.js</span>
+              <span class="chip">Tailwind CSS</span>
+              <span class="chip">Vite</span>
+            </div>
+          </div>
+          <div>
+            <div class="role-section-label">핵심 원칙</div>
+            <ul class="principles">
+              <li>컴포넌트 기반 아키텍처</li>
+              <li>성능 최적화 (lazy loading, memoization)</li>
+              <li>크로스 브라우저 호환성</li>
+            </ul>
+          </div>
+          <div>
+            <div class="role-section-label">Output Flow</div>
+            <div class="output-tag">
+              <span>컴포넌트 설계</span><span class="output-arrow">→</span>
+              <span>코드 작성</span><span class="output-arrow">→</span>
+              브라우저 테스트 노트
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="role-card">
+        <div class="role-header">
+          <div class="role-icon backend">⚙️</div>
+          <div class="role-title">Backend Developer</div>
+          <div class="role-subtitle">견고한 서버 사이드 애플리케이션 및 API 구축</div>
+        </div>
+        <div class="role-body">
+          <div>
+            <div class="role-section-label">Tech Stack</div>
+            <div class="tech-chips">
+              <span class="chip green">Python</span>
+              <span class="chip green">FastAPI</span>
+              <span class="chip green">Node.js</span>
+              <span class="chip green">PostgreSQL</span>
+              <span class="chip green">Redis</span>
+            </div>
+          </div>
+          <div>
+            <div class="role-section-label">핵심 원칙</div>
+            <ul class="principles">
+              <li>RESTful 컨벤션 (HTTP 메서드/상태코드)</li>
+              <li>입력 검증 & 에러 핸들링</li>
+              <li>보안: SQL Injection 방지, JWT 인증</li>
+            </ul>
+          </div>
+          <div>
+            <div class="role-section-label">Output Flow</div>
+            <div class="output-tag">
+              <span>API 설계</span><span class="output-arrow">→</span>
+              <span>문서화 코드</span><span class="output-arrow">→</span>
+              엔드포인트 테스트 가이드
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Stack -->
+      <div class="role-card">
+        <div class="role-header">
+          <div class="role-icon fullstack">🔗</div>
+          <div class="role-title">Full Stack Developer</div>
+          <div class="role-subtitle">프론트엔드와 백엔드를 통합한 완전한 애플리케이션</div>
+        </div>
+        <div class="role-body">
+          <div>
+            <div class="role-section-label">Tech Stack</div>
+            <div class="tech-chips">
+              <span class="chip orange">React</span>
+              <span class="chip orange">FastAPI</span>
+              <span class="chip orange">Supabase</span>
+              <span class="chip orange">Docker</span>
+              <span class="chip orange">Vercel</span>
+            </div>
+          </div>
+          <div>
+            <div class="role-section-label">핵심 원칙</div>
+            <ul class="principles">
+              <li>관심사 분리 (MVC/레이어드 아키텍처)</li>
+              <li>환경 설정 (.env 모범 사례)</li>
+              <li>전 레이어 에러 핸들링</li>
+            </ul>
+          </div>
+          <div>
+            <div class="role-section-label">Output Flow</div>
+            <div class="output-tag">
+              <span>시스템 아키텍처</span><span class="output-arrow">→</span>
+              <span>통합 코드</span><span class="output-arrow">→</span>
+              배포 체크리스트
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DevOps -->
+      <div class="role-card">
+        <div class="role-header">
+          <div class="role-icon devops">🚀</div>
+          <div class="role-title">DevOps Engineer</div>
+          <div class="role-subtitle">개발 워크플로우 최적화 및 배포 파이프라인 구축</div>
+        </div>
+        <div class="role-body">
+          <div>
+            <div class="role-section-label">Tech Stack</div>
+            <div class="tech-chips">
+              <span class="chip red">Docker</span>
+              <span class="chip red">GitHub Actions</span>
+              <span class="chip red">Nginx</span>
+              <span class="chip red">PM2</span>
+              <span class="chip red">Linux</span>
+            </div>
+          </div>
+          <div>
+            <div class="role-section-label">검토 체크리스트</div>
+            <ul class="checklist">
+              <li>환경변수 올바르게 구성됨</li>
+              <li>자동화 빌드 & 배포 파이프라인</li>
+              <li>헬스체크 & 로깅 구현됨</li>
+              <li>성능: 3초 미만 페이지 로드</li>
+            </ul>
+          </div>
+          <div>
+            <div class="role-section-label">Output Flow</div>
+            <div class="output-tag">
+              <span>인프라 설계</span><span class="output-arrow">→</span>
+              <span>설정 파일</span><span class="output-arrow">→</span>
+              모니터링 설정
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
